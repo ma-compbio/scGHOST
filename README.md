@@ -21,11 +21,9 @@ All Python dependencies can be installed by running
 
 ### Python dependencies:
 
-* Python (3.7.X). Any version of Python 3.7 should work, but the code has been confirmed to work on 3.7.11.
-* PyTorch (1.10.1)
-* h5py (2.8.0)
-* numpy (1.15.4)
-* scipy (1.11.0)
+All Python package dependencies are listed in `requirements.txt`.
+
+scGHOST requires python (3.7.X). Any Python 3.7 version should work, but the code was developed in Python 3.7.11.
 
 # Usage
 
