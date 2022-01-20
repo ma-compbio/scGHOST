@@ -5,7 +5,13 @@
         "cell_type_key": "cluster label"
     },
     "data_directory" : "/mnt/h/data/tmp",
-    "chromosomes" : "autosomes",
+    "chromosomes" : [1,2],
     "chrom_sizes" : "data/hg38.chrom.sizes",
-    "cell_type" : null
+    "cell_type" : null,
+    "random_walk" : {
+        "num_walks" : 50,
+        "ignore_top" : 0.02,
+        "top_percentile" : 0.25
+    },
+    "num_clusters" : 5
 }

@@ -131,9 +131,7 @@ def extract_OEMs(fname,cell_type_index,chrom_indices,chrom_num,chrom_start_end,s
     if save_path is None:
         return OEMs, Ms
     else:
-        # np.savez_compressed(save_path,oe=OEMs,observed=Ms)
         np.save(save_path,OEMs)
-        np.save(save_path+'_observed',Ms)
 
 def compute_observed_over_expected(runtime_args):
     
