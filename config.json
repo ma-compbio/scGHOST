@@ -1,0 +1,11 @@
+{
+    "schic_directory" : "/mnt/h/data/4dn_scihic",
+    "label_info": {
+        "path":"/mnt/f/data/schic/label_info.pickle",
+        "cell_type_key": "cluster label"
+    },
+    "data_directory" : "/mnt/h/data/tmp",
+    "chromosomes" : "autosomes",
+    "chrom_sizes" : "data/hg38.chrom.sizes",
+    "cell_type" : null
+}
