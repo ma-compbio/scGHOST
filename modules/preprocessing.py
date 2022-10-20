@@ -5,61 +5,10 @@ import gc
 import os
 import h5py
 
+from utilities.parsers import parse_chromosomes, parse_cell_types
 from utilities.chrom_sizes import chrom_sizes
 from scipy.sparse import coo_matrix
 from tqdm import trange
-
-def get_expected(M,eps=1e-8):
-    E = np.zeros_like(M)
-    l = len(M)
-
-    for i in range(M.shape[0]):
-        contacts = np.diag(M,i)
-        expected = contacts.sum() / (l-i)
-        # expected = np.median(contacts)
-        x_diag,y_diag = np.diag_indices(M.shape[0]-i)
-        x,y = x_diag,y_diag+i
-        E[x,y] = expected
-
-    E += E.T
-    E = np.nan_to_num(E) + eps
-    
-    return E
-    
-def get_oe_matrix(M):
-    E = get_expected(M)
-    oe = np.nan_to_num(M / E)
-    np.fill_diagonal(oe,1)
-    
-    return oe
-
-def parse_chromosomes(runtime_args):
-
-    sizes = chrom_sizes(runtime_args['chrom_sizes'])
-    chromosomes = runtime_args['chromosomes']
-    
-    if chromosomes == 'autosomes':
-        chrom_list = []
-
-        for chrom in sizes:
-            chrom_num = chrom[3:]
-            if chrom_num.isnumeric():
-                chrom_list.append(int(chrom_num))
-        chromosomes = np.array(chrom_list)
-    else:
-        chromosomes = np.array(chromosomes)
-
-    return chromosomes
-
-def parse_cell_types(runtime_args):
-    label_info = pickle.load(open(runtime_args['label_info']['path'],'rb'))
-
-    cell_type = runtime_args['cell_type']
-    cell_type_filter = cell_type is not None
-    cell_types = np.array(label_info[runtime_args['label_info']['cell_type_key']]).astype(str)
-    cell_type_index = np.where(cell_types == cell_type) if cell_type_filter else np.arange(len(cell_types))
-
-    return cell_type_index
 
 def compute_chrom_indices(runtime_args):
 
@@ -86,15 +35,15 @@ def compute_chrom_indices(runtime_args):
     data_dir = runtime_args['data_directory']
     pickle.dump(chrom_indices,open(
             os.path.join(data_dir,'chrom_indices.pkl'),'wb'
-        ))
+    ))
 
-def extract_OEMs(fname,cell_type_index,chrom_indices,chrom_num,chrom_start_end,save_path=None,offset=0,eps=1e-8):
+def extract_OEMs(fname,cell_type_index,chrom_indices,num_cells,chrom_num,chrom_start_end,save_path=None,eps=1e-8):
     f = h5py.File(fname)
     
     chrom_size = chrom_start_end[chrom_num-1,1] - chrom_start_end[chrom_num-1,0]
     coords = np.array(f['coordinates'])
 
-    num_cells = len(cell_type_index) # if num_cells is None else np.min([num_cells,len(cell_type_index)])
+    num_cells = len(cell_type_index) if num_cells is None else np.min([num_cells,len(cell_type_index)])
     cells_data = np.array([np.array(f['cell_%d' % cell_type_index[i]]) for i in range(num_cells)])
 
     OEMs = []
@@ -121,6 +70,8 @@ def extract_OEMs(fname,cell_type_index,chrom_indices,chrom_num,chrom_start_end,s
 
         OE = M / E
         OE = OE[chrom_indices][:,chrom_indices]
+        OE[OE == 0] = 1
+        OE = np.log(OE)
         Ms.append(M[chrom_indices][:,chrom_indices])
         OEMs.append(OE)
 
@@ -131,7 +82,9 @@ def extract_OEMs(fname,cell_type_index,chrom_indices,chrom_num,chrom_start_end,s
     if save_path is None:
         return OEMs, Ms
     else:
+        # np.savez_compressed(save_path,oe=OEMs,observed=Ms)
         np.save(save_path,OEMs)
+        np.save(save_path+'_observed',Ms)
 
 def compute_observed_over_expected(runtime_args):
     
@@ -149,6 +102,7 @@ def compute_observed_over_expected(runtime_args):
             os.path.join(runtime_args['schic_directory'],'chr%d_exp5_zinb_nbr_0_impute.hdf5' % (chrom_num)),
             cell_type_index,
             chrom_indices['chr%d' % chrom_num],
+            None,
             chrom_num,
             chrom_start_end,
             save_path=os.path.join(runtime_args['data_directory'],'chr%d_oe' % (chrom_num)),

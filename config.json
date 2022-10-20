@@ -2,16 +2,19 @@
     "schic_directory" : "/mnt/h/data/4dn_scihic",
     "label_info": {
         "path":"/mnt/f/data/schic/label_info.pickle",
-        "cell_type_key": "cluster label"
+        "cell_type_key": "cell_type"
     },
     "data_directory" : "/mnt/h/data/tmp",
     "chromosomes" : [1,2],
     "chrom_sizes" : "data/hg38.chrom.sizes",
-    "cell_type" : null,
+    "embeddings_path" : "/mnt/h/data/4dn_scihic/exp1_0_origin.npy",
+    "higashi_scab_path" : "/mnt/h/data/4dn_scihic/scAB_nbr.h5",
+    "cell_type" : "GM12878",
     "random_walk" : {
         "num_walks" : 50,
         "ignore_top" : 0.02,
         "top_percentile" : 0.25
     },
+    "eps": 1e-8,
     "num_clusters" : 5
 }

@@ -6,7 +6,7 @@ from modules.preprocessing import compute_chrom_indices, compute_observed_over_e
 from modules.random_walk import random_walk
 from modules.postprocessing import label_calibration
 from modules.embedding import graph_embedding
-from modules.clustering import kmeans_clustering
+from modules.clustering import scghost_clustering
 
 if __name__ == '__main__':
 
@@ -22,4 +22,4 @@ if __name__ == '__main__':
     random_walk(runtime_args)
     label_calibration(runtime_args)
     graph_embedding(runtime_args)
-    kmeans_clustering(runtime_args)
+    scghost_clustering(runtime_args)
