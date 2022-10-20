@@ -4,7 +4,7 @@ import gc
 import numpy as np
 import pickle
 
-from modules.preprocessing import parse_chromosomes
+from modules.preprocessing import parse_chromosomes, parse_nearest_neighbors
 from tqdm import trange
 from torch.nn import functional as F
 
@@ -15,7 +15,7 @@ def to_cuda(x):
     
     return x
 
-def post_process_samples(sample_file,OEM_file,save_path):
+def post_process_samples(sample_file,OEM_file,save_path,nearest_neighbors):
     sample_data = pickle.load(open(sample_file,'rb'))
     OEMs = np.load(OEM_file)
     
@@ -80,6 +80,7 @@ def post_process_samples(sample_file,OEM_file,save_path):
 def label_calibration(runtime_args):
 
     chromosomes = parse_chromosomes(runtime_args)
+    nearest_neighbors = parse_nearest_neighbors(runtime_args)
     
     for chrn in range(chromosomes):
         
@@ -91,7 +92,8 @@ def label_calibration(runtime_args):
         post_process_samples(
             sample_path,
             oe_path,
-            out_path
+            out_path,
+            nearest_neighbors
         )
         
         torch.cuda.empty_cache()

@@ -42,9 +42,12 @@ scGHOST can be run using the following command:
 - `data_directory` : the output directory of scGHOST
 - `chromosomes` : the list of chromosomes to apply scGHOST to. default: autosomes
 - `chrom_sizes` : file path to the chromosome sizes file. default: `data/hg38.chrom.sizes`
+- `embeddings_path` : file path to the Higashi embeddings `.npy` file for each cell in the dataset
+- `higashi_scab_path` : file path to Higashi scA/B scores `.h5` file
 - `cell_type` : the cell type in the dataset to apply scGHOST on; use `null` to apply scGHOST to all cell types in the dataset. default: `null`
 - `random_walk` : random walk parameters
   - `num_walks` : number of random walks per iteration. default: 50
   - `ignore_top` : the top and bottom percentile to be ignored, to remove extreme values in the input matrix. default: 0.02
   - `top_percentile` : the top percentiles within which random walks are performed. default: 0.25
+- `eps` : small float value to prevent dividing by zero in some functions. default: 1e-8
 - `num_clusters` : number of clusters to partition chromosomes into

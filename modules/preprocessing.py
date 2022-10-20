@@ -106,6 +106,7 @@ def compute_observed_over_expected(runtime_args):
             chrom_num,
             chrom_start_end,
             save_path=os.path.join(runtime_args['data_directory'],'chr%d_oe' % (chrom_num)),
+            eps=runtime_args['eps']
         )
 
         print('chr%d complete' % chrom_num)
