@@ -1,31 +1,45 @@
-# README for scGHOST
-Please email kxiong@andrew.cmu.edu with any questions about installation or usage.
+# Overview of scGHOST
 
-# Installation
+![Overview of scGHOST](scghost_overview.png)
 
-To install scGHOST, clone the repository and install the necessary requirements by running the following command on a Linux terminal:
+scGHOST is an unsupervised single-cell subcompartment annotation method based on graph embedding with constrained random walk sampling.
+scGHOST is designed to be run on a single-cell Hi-C (scHi-C) dataset which has undergone imputation by [Higashi](https://github.com/ma-compbio/Higashi) ([Zhang et al. 2022](https://www.nature.com/articles/s41587-021-01034-y)).
+scGHOST assigns embeddings to genomic loci in the genomes of individual cells by viewing scHi-C as graphs whose vertices are genomic loci and edges are the contact frequencies among loci.
+While scGHOST is developed for scHi-C data, it can also identify single-cell subcompartments in single-cell genome imaging data.
 
-`pip install -r requirements.txt`
+# Running scGHOST
 
-Systems without a CUDA-capable GPU can also install scGHOST using the same dependencies.
+## Installation
 
-We recommend using Anaconda to create a python 3.7 environment using
+Before installing any Python packages, we strongly recommend using Anaconda (please refer to the [Anaconda](https://anaconda.org/) webpage for `conda` installation instructions) to create a python 3.7 environment using the following command:
 
 `conda install --name scghost python=3.7`
 
-## Requirements
+After creating the environment, activate it using:
 
-All Python dependencies can be installed by running
+`conda activate scghost`
 
-`pip install -r requirements.txt` (see Installation)
+scGHOST requires the following Python packages:
+* PyTorch (1.10.1)
+* scikit-learn
+* h5py
+* tqdm
+* mkl-fft,mkl-random,mkl-service
+* numpy
+* scipy
 
-### Python dependencies:
+Users can install scGHOST dependencies using `pip` by cloning this repository and installing the necessary requirements using the following command:
 
-All Python package dependencies are listed in `requirements.txt`.
+`pip install -r requirements.txt`
 
-scGHOST requires python (3.7.X). Any Python 3.7 version should work, but the code was developed in Python 3.7.11.
+Systems without a CUDA-capable GPU can also install scGHOST using the same dependencies, but note that runtimes on a CPU-only system may be much longer than on a GPU-enabled system.
 
-# Usage
+## Hardware Requirements
+
+scGHOST uses up to 60 GB of memory for a single-cell dataset of approximately 4000 cells.
+We therefore recommend a machine with at least 64 GB of memory to avoid sluggish performance or memory errors at runtime.
+
+## Usage
 
 scGHOST can be run using the following command:
 
@@ -51,3 +65,6 @@ scGHOST can be run using the following command:
   - `top_percentile` : the top percentiles within which random walks are performed. default: 0.25
 - `eps` : small float value to prevent dividing by zero in some functions. default: 1e-8
 - `num_clusters` : number of clusters to partition chromosomes into
+
+## Contact
+Please email kxiong@andrew.cmu.edu or raise an issue in the github repository with any questions about installation or usage.
