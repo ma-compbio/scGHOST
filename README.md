@@ -50,7 +50,7 @@ scGHOST can be run using the following command:
 
 `configuration_filepath` is the filepath to a custom configuration file adhering to the JSON format. By default, scGHOST uses the included config.json file, which can be modified to the user's specifications.
 
-A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2troxoz0nsdagka3nf42z).
+A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2troxoz0nsdagka3nf42z). To run scGHOST on the demo, change the items in the configuration file to refer to the appropriate paths where you have downloaded the demo and change the list of chromosomes to `[10,11]`.
 
 ## Configuration file
 
