@@ -34,10 +34,13 @@ Users can install scGHOST dependencies using `pip` by cloning this repository an
 
 Systems without a CUDA-capable GPU can also install scGHOST using the same dependencies, but note that runtimes on a CPU-only system may be much longer than on a GPU-enabled system.
 
+Installation of scGHOST can be completed in under 10 minutes on a normal desktop computer, but install times can vary based on network speed required to download large Python packages.
+
 ## Hardware Requirements
 
 scGHOST uses up to 60 GB of memory for a single-cell dataset of approximately 4000 cells.
 We therefore recommend a machine with at least 64 GB of memory to avoid sluggish performance or memory errors at runtime.
+For a dataset of ~4000 cells, scGHOST takes around 24 hours to run on a system with 64 GB of memory and an Nvidia RTX 3080 with 10GB of VRAM.
 
 ## Usage
 
@@ -65,6 +68,12 @@ scGHOST can be run using the following command:
   - `top_percentile` : the top percentiles within which random walks are performed. default: 0.25
 - `eps` : small float value to prevent dividing by zero in some functions. default: 1e-8
 - `num_clusters` : number of clusters to partition chromosomes into
+
+## Expected outputs
+
+scGHOST outputs two pickle files: 1 file with the genome coordinates of each genomic bin of the genome and 1 file with the corresponding subcompartment labels.
+
+Both genome coordinate and subcompartment output files are dictionaries whose keys are every chromosome in the genome. The value of the dictionary for each chromosome is a numpy array. In the genome coordinates file, the array consists of chromosome positions binned at the specified resolution (default: 500kb). In the subcompartment labels file, the array consists of integer subcompartment labels.
 
 ## Contact
 Please email kxiong@andrew.cmu.edu or raise an issue in the github repository with any questions about installation or usage.
