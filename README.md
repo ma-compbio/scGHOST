@@ -50,6 +50,8 @@ scGHOST can be run using the following command:
 
 `configuration_filepath` is the filepath to a custom configuration file adhering to the JSON format. By default, scGHOST uses the included config.json file, which can be modified to the user's specifications.
 
+A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2troxoz0nsdagka3nf42z).
+
 ## Configuration file
 
 - `schic_directory` : the directory containing Higashi-imputed single-cell Hi-C maps.
