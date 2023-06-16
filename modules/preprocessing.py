@@ -99,7 +99,7 @@ def compute_observed_over_expected(runtime_args):
         cell_type_index = parse_cell_types(runtime_args)
 
         extract_OEMs(
-            os.path.join(runtime_args['schic_directory'],'chr%d_exp5_zinb_nbr_0_impute.hdf5' % (chrom_num)),
+            os.path.join(runtime_args['schic_directory'],'chr%d_exp1_nbr_5_impute.hdf5' % (chrom_num)),
             cell_type_index,
             chrom_indices['chr%d' % chrom_num],
             None,
