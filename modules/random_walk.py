@@ -6,7 +6,7 @@ import gc
 import numpy as np
 
 from utilities.gpu import to_cuda
-from modules.preprocessing import parse_chromosomes, parse_nearest_neighbors
+from utilities.parsers import parse_chromosomes, parse_nearest_neighbors
 from torch.nn import functional as F
 from tqdm import trange
 
