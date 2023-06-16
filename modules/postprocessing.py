@@ -4,7 +4,7 @@ import gc
 import numpy as np
 import pickle
 
-from modules.preprocessing import parse_chromosomes, parse_nearest_neighbors
+from utilities.parsers import parse_chromosomes, parse_nearest_neighbors
 from tqdm import trange
 from torch.nn import functional as F
 
