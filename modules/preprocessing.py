@@ -100,7 +100,7 @@ def compute_observed_over_expected(runtime_args):
 
         extract_OEMs(
             os.path.join(runtime_args['schic_directory'],'chr%d_exp1_nbr_5_impute.hdf5' % (chrom_num)),
-            cell_type_index,
+            cell_type_index[0],
             chrom_indices['chr%d' % chrom_num],
             None,
             chrom_num,
