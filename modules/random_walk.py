@@ -38,7 +38,7 @@ def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,use_breakpoint=Fals
         for i in range(m.shape[0]):
             sorted_slc_w[i],sorted_slc_i[i] = m[i].sort(dim=1)
             sorted_slc_w_T[i],sorted_slc_i_T[i] = m[i].T.sort(dim=1)
-        
+        num_walks = 50 #hard-coding from the config file
         for n in range(num_walks):
 
             test_samples = to_cuda(torch.arange(m.shape[1]))
