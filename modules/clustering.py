@@ -168,7 +168,7 @@ Legacy K-Means clustering per chromosome
 """
 def kmeans_clustering(runtime_args):
     nc = runtime_args['num_clusters']
-    chromosomes = parse_chromosomes(runtime_args['chromosomes'])
+    chromosomes = parse_chromosomes(runtime_args)
 
     clusters = {}
 
