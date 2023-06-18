@@ -123,7 +123,7 @@ def random_walk(runtime_args):
         print('Processing random walks in chromosome %d' % chrom_num)
         
         oe_path = os.path.join(runtime_args['data_directory'],'chr%d_oe.npy' % chrom_num)
-        out_path = os.path.join(runtime_args['data_directory'],'chr%d_samples.npy' % chrom_num)
+        out_path = os.path.join(runtime_args['data_directory'],'chr%d_samples.pkl' % chrom_num)
 
         OEMs = np.load(oe_path)
 
