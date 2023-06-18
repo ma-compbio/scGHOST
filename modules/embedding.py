@@ -38,7 +38,7 @@ class hubs(nn.Module):
     def embed(self,x):
         return self.embedding(self.to_one_hot(x))
     
-def embed_single_cells(pairs_labels_file,oems_file,embedding_file,cell_nums,batch_size=64):
+def embed_single_cells(pairs_labels_file,oems_file,embedding_file,cell_nums,batch_size=500):
     
     pairs_labels = pickle.load(open(pairs_labels_file,'rb'))
     all_continuous_pairs = pairs_labels['pairs']
@@ -124,8 +124,7 @@ def graph_embedding(runtime_args):
             sample_path,
             oe_path,
             out_path,
-            None, # specify cell_nums to limit the dataset size, not implemented modularly
-            num_cells 
+            None # specify cell_nums to limit the dataset size, not implemented modularly
         )
         
         torch.cuda.empty_cache()
