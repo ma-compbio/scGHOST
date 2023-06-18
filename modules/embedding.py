@@ -5,7 +5,7 @@ import pickle
 import gc
 import tqdm
 
-from tqdm import trange
+from tqdm import tqdm
 from modules.preprocessing import parse_chromosomes
 from torch import nn
 from tqdm import trange
