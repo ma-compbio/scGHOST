@@ -3,6 +3,7 @@ import numpy as np
 import h5py
 import pickle
 import gc
+import os
 
 from utilities.chrom_sizes import chrom_sizes
 from sklearn.neighbors import NearestNeighbors
