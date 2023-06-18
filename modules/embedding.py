@@ -117,7 +117,7 @@ def graph_embedding(runtime_args):
     
         sample_path = os.path.join(runtime_args['data_directory'],'chr%d_calibrated_samples.pkl' % chrn)
         oe_path = os.path.join(runtime_args['data_directory'],'chr%d_oe.npy' % chrn)
-        out_path = os.path.join(runtime_args['data_directory'],'chr%d_embeddings' % chrn)
+        out_path = os.path.join(runtime_args['data_directory'],'chr%d_embeddings.npy' % chrn)
 
         # params: (pairs_labels_file,oems_file,embedding_file,cell_nums,batch_size=64)
         embed_single_cells(
