@@ -124,7 +124,8 @@ def graph_embedding(runtime_args):
             sample_path,
             oe_path,
             out_path,
-            num_cells # specify cell_nums to limit the dataset size, not implemented modularly
+            None, # specify cell_nums to limit the dataset size, not implemented modularly
+            num_cells 
         )
         
         torch.cuda.empty_cache()
