@@ -181,7 +181,7 @@ def kmeans_clustering(runtime_args):
         ))['chr%d' % chrom]
 
         embeddings = np.load(
-            os.path.join(runtime_args['data_directory'],'chr%d_embeddings.npy')
+            os.path.join(runtime_args['data_directory'],'chr%d_embeddings.npy' % chrom)
         )
         
         num_cells = len(embeddings)
