@@ -54,7 +54,7 @@ def parse_chrom_embeds(runtime_args):
         
         chrom_highlow['chr%d' % chrom] = {'high' : scab_highidx,'low' : scab_lowidx}
         
-        scembeds = np.load(open(os.path.join(runtime_args['data_directory'],chr%d_embeddings.npy'),'rb') % chrom)
+        scembeds = np.load(open(os.path.join(runtime_args['data_directory'],'chr%d_embeddings.npy'),'rb') % chrom)
         scembeds = scembeds[:,scghost_crop]
         
         chrom_embeds['chr%d' % chrom] = scembeds
