@@ -6,7 +6,7 @@ import gc
 import tqdm
 
 from tqdm import tqdm
-from modules.preprocessing import parse_chromosomes
+from utilities.parsers import parse_chromosomes
 from torch import nn
 from tqdm import trange
 from torch.nn import functional as F
