@@ -111,7 +111,7 @@ def embed_single_cells(pairs_labels_file,oems_file,embedding_file,cell_nums,batc
 
 def graph_embedding(runtime_args):
 
-    chromosomes = parse_chromosomes(runtime_args['chromosomes'])
+    chromosomes = parse_chromosomes(runtime_args)
 
     for chrn in chromosomes:
     
