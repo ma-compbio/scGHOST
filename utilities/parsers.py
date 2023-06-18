@@ -42,7 +42,7 @@ def parse_chrom_embeds(runtime_args):
 
     for chrom in chromosomes:
         
-        chrom_indices = pickle.load(open('data/wtc_indices.pkl','rb'))['chr%d' % chrom]
+        chrom_indices = pickle.load(open(os.path.join(runtime_args['data_directory'],'chrom_indices.pkl'),'rb'))['chr%d' % chrom]
         scab_chrom_indices = np.where(scAB_chrom == 'chr%d' % chrom)[0]
         _,scab_crop,scghost_crop = np.intersect1d(scAB_start[scab_chrom_indices] // 500000,chrom_indices,return_indices=True)
         scab_indices = scab_chrom_indices[scab_crop]
