@@ -13,7 +13,7 @@ While scGHOST is developed for scHi-C data, it can also identify single-cell sub
 
 Before installing any Python packages, we strongly recommend using Anaconda (please refer to the [Anaconda](https://anaconda.org/) webpage for `conda` installation instructions) to create a python 3.7 environment using the following command:
 
-`conda create --name scghost python=3.7`
+`conda create --name scghost python=3.8`
 
 After creating the environment, activate it using:
 
