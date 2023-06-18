@@ -54,7 +54,7 @@ def parse_chrom_embeds(runtime_args):
         
         chrom_highlow['chr%d' % chrom] = {'high' : scab_highidx,'low' : scab_lowidx}
         
-        scembeds = np.load('/mnt/d/data/wtc_out/embeddings_chr%d.npy' % chrom)
+        scembeds = np.load('/mnt/d/data/wtc_out/chr%d_embeddings.npy' % chrom)
         scembeds = scembeds[:,scghost_crop]
         
         chrom_embeds['chr%d' % chrom] = scembeds
