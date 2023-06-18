@@ -82,7 +82,7 @@ def label_calibration(runtime_args):
     chromosomes = parse_chromosomes(runtime_args)
     nearest_neighbors = parse_nearest_neighbors(runtime_args)
     
-    for chrn in range(chromosomes):
+    for chrn in chromosomes:
         
         sample_path = os.path.join(runtime_args['data_directory'],'chr%d_samples.pkl' % chrn)
         oe_path = os.path.join(runtime_args['data_directory'],'chr%d_oe.npy' % chrn)
