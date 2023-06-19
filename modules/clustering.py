@@ -23,7 +23,7 @@ def scghost_clustering(runtime_args):
     cell_labels = []
     cell_labels_transpose = []
 
-    for cn in trange(N-1):
+    for cn in trange(N):
         
         inter_matrix = []
         
