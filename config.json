@@ -1,15 +1,15 @@
 {
-    "schic_directory" : "/work/magroup/asachan2/scHiC_datasets/4dn_scihic",
+    "schic_directory" : "/work/magroup/asachan2/Higashi/runs/liu_mm10",
     "label_info": {
-        "path":"/work/magroup/asachan2/scHiC_datasets/4dn_scihic/label_info_4DN_sciHiC.pickle",
-        "cell_type_key": "cell type"
+        "path":"/work/magroup/asachan2/Higashi/runs/liu_mm10/label_info.pickle",
+        "cell_type_key": "cell type summary"
     },
-    "data_directory" : "/work/magroup/asachan2/scGHOST/runs/4dn_scihic",
+    "data_directory" : "/work/magroup/asachan2/scGHOST/runs/liu_mm10",
     "chromosomes" : [1,2],
-    "chrom_sizes" : "data/hg38.chrom.sizes",
-    "embeddings_path" : "/work/magroup/asachan2/scHiC_datasets/4dn_scihic/embed/exp1_0_origin.npy",
-    "higashi_scab_path" : "/work/magroup/asachan2/scHiC_datasets/4dn_scihic/scAB_nbr.hdf5",
-    "cell_type" : "GM12878",
+    "chrom_sizes" : "/work/magroup/ruochiz/Higashi/mm10.chrom.sizes.txt",
+    "embeddings_path" : "/work/magroup/asachan2/Higashi/runs/liu_mm10/embed/exp1_zinb_0_origin.npy",
+    "higashi_scab_path" : "/work/magroup/asachan2/Higashi/runs/liu_mm10/scCompartment.hdf5",
+    "cell_type" : "Exc",
     "random_walk" : {
         "num_walks" : 50,
         "ignore_top" : 0.02,
