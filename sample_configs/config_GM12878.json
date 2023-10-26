@@ -1,10 +1,10 @@
 {
-    "schic_directory" : "/directory/of/higashi/imputed/maps",
+    "schic_directory" : "/mnt/e/data/4dn_orig",
     "label_info": {
-        "path":"/path/to/label_info.pickle",
-        "cell_type_key": "cell type key in label_info.pickle"
+        "path":"/mnt/e/data/4dn_scihic/label_info_4DN_sciHiC.pickle",
+        "cell_type_key": "cell type"
     },
-    "data_directory" : "/directory/to/save/scghost/outputs/",
+    "data_directory" : "/mnt/e/data/scghost_GM12878_output",
     "chromosomes" : {
         "1" : {
             "adj" : "chr1_sparse_adj.npy",
@@ -118,12 +118,12 @@
         }
     },
     "chrom_sizes" : "data/hg38.chrom.sizes",
-    "chrom_indices" : null,
-    "embeddings_path" : "/path/to/exp1_0_origin.npy",
-    "higashi_scab_path" : "/path/to/higashi/scAB.hdf5",
-    "cell_type" : null,
+    "chrom_indices" : "/mnt/e/data/scghost_GM12878_output/chrom_indices.pkl",
+    "embeddings_path" : "/mnt/e/data/4dn_scihic/exp1_0_origin.npy",
+    "higashi_scab_path" : "/mnt/e/data/4dn_scihic/scAB.hdf5",
+    "cell_type" : "GM12878",
     "random_walk" : {
-        "num_walks" : 50,
+        "num_walks" : 25,
         "ignore_top" : 0.02,
         "top_percentile" : 0.25
     },

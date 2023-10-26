@@ -11,46 +11,50 @@ While scGHOST is developed for scHi-C data, it can also identify single-cell sub
 
 ## Installation
 
-Before installing any Python packages, we strongly recommend using Anaconda (please refer to the [Anaconda](https://anaconda.org/) webpage for `conda` installation instructions) to create a python 3.7 environment using the following command:
+Before installing any Python packages, we strongly recommend using Anaconda (please refer to the [Anaconda](https://anaconda.org/) webpage for `conda` installation instructions) to create a python 3.10 environment using the following command:
 
-`conda install --name scghost python=3.7`
+`conda install --name scghost python=3.10`
 
 After creating the environment, activate it using:
 
 `conda activate scghost`
 
-scGHOST requires the following Python packages:
-* PyTorch (1.10.1)
-* scikit-learn
-* h5py
-* tqdm
-* mkl-fft,mkl-random,mkl-service
-* numpy
-* scipy
+### Dependencies
 
-Users can install scGHOST dependencies using `pip` by cloning this repository and installing the necessary requirements using the following command:
+#### Conda installations
+- PyTorch (2.1.0) with CUDA (11.8)
+- Scikit-learn (latest)
+- h5py
+#### Pip installations
+- [cuML for CUDA 11.8](https://docs.rapids.ai/install#selector)
+- [Thread-pool Controls](https://pypi.org/project/threadpoolctl/) (> 3)
 
-`pip install -r requirements.txt`
+Users can install scGHOST dependencies using the `conda` or `pip` commands following the specifications above.
 
-Systems without a CUDA-capable GPU can also install scGHOST using the same dependencies, but note that runtimes on a CPU-only system may be much longer than on a GPU-enabled system.
-
-Installation of scGHOST can be completed in under 10 minutes on a normal desktop computer, but install times can vary based on network speed required to download large Python packages.
+Systems without a CUDA-capable GPU can also install scGHOST using the same dependencies and installing PyTorch for CPU only, but will have to modify the source code in `modules/clustering.py` to use `SKMeans` instead of `KMeans` under the `scghost_clustering_reworked` function. We may add a flag in the config file to run CPU only instead, but from our experience running scGHOST on the CPU only takes far longer than on a GPU and is not recommended.
 
 ## Hardware Requirements
 
-scGHOST uses up to 60 GB of memory for a single-cell dataset of approximately 4000 cells.
-We therefore recommend a machine with at least 64 GB of memory to avoid sluggish performance or memory errors at runtime.
-For a dataset of ~4000 cells, scGHOST takes around 24 hours to run on a system with 64 GB of memory and an Nvidia RTX 3080 with 10GB of VRAM.
+scGHOST uses up to 60 GB of memory for a single-cell dataset of 4,238 cells.
+We therefore recommend running scGHOST on a machine with at least 64 GB of memory to avoid poor performance or out-of-memory errors at runtime.
+
+scGHOST was developed on an Nvidia RTX 3090 GPU with 24GB of VRAM. With GPU caching enabled, scGHOST uses a maximum of 15 GB of VRAM on the PFC dataset. With GPU caching disabled, VRAM becomes less of a limiting factor and scGHOST should run on any CUDA-capable GPU.
 
 ## Usage
 
-scGHOST can be run using the following command:
+Users can run scGHOST using the following command:
 
-`python scghost.py --config <configuration_filepath.json>`
+`python scghost.py --config <configuration.json>`
 
-`configuration_filepath` is the filepath to a custom configuration file adhering to the JSON format. By default, scGHOST uses the included config.json file, which can be modified to the user's specifications.
+Sample JSON config files for scGHOST have been provided.
 
-A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2troxoz0nsdagka3nf42z). To run scGHOST on the demo, change the items in the configuration file to refer to the appropriate paths where you have downloaded the demo and change the list of chromosomes to `[10,11]`. Please note that the demo only includes two chromosomes and the smaller subset of chromosomes may result in annotations that do not match the annotations reported in our manuscript. For the full data set, please run scGHOST on the full dataset included in the [same folder](https://cmu.box.com/s/kuuaccdstys2troxoz0nsdagka3nf42z).
+`configuration` is the filepath to a custom configuration file adhering to the JSON format for scGHOST. By default, scGHOST uses the included config.json file, which can be modified to the user's specifications.
+
+**Note**: users may run into a `RuntimeWarning` after the clustering step. This is normal behavior and should not affect the accuracy of results.
+
+## Runtime
+scGHOST was run on a machine with a 12-core 12th generation Intel CPU and Nvidia RTX 3090 24GB GPU.
+From scratch, scGHOST takes about 2 hours to run on the sciHi-C GM12878 dataset and about 4 hours to run on the human prefrontal cortex dataset.
 
 ## Configuration file
 
@@ -61,6 +65,7 @@ A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2
 - `data_directory` : the output directory of scGHOST
 - `chromosomes` : the list of chromosomes to apply scGHOST to. default: autosomes
 - `chrom_sizes` : file path to the chromosome sizes file. default: `data/hg38.chrom.sizes`
+- `chrom_indices` : file path to chrom indices if previously computed. Development flag to save time over multiple runs on the same dataset. Default: `null`
 - `embeddings_path` : file path to the Higashi embeddings `.npy` file for each cell in the dataset
 - `higashi_scab_path` : file path to Higashi scA/B scores `.h5` file
 - `cell_type` : the cell type in the dataset to apply scGHOST on; use `null` to apply scGHOST to all cell types in the dataset. default: `null`
@@ -70,12 +75,11 @@ A small demo dataset can be downloaded [here](https://cmu.box.com/s/kuuaccdstys2
   - `top_percentile` : the top percentiles within which random walks are performed. default: 0.25
 - `eps` : small float value to prevent dividing by zero in some functions. default: 1e-8
 - `num_clusters` : number of clusters to partition chromosomes into
-
-## Expected outputs
-
-scGHOST outputs two pickle files: 1 file with the genome coordinates of each genomic bin of the genome and 1 file with the corresponding subcompartment labels.
-
-Both genome coordinate and subcompartment output files are dictionaries whose keys are every chromosome in the genome. The value of the dictionary for each chromosome is a numpy array. In the genome coordinates file, the array consists of chromosome positions binned at the specified resolution (default: 500kb). In the subcompartment labels file, the array consists of integer subcompartment labels.
+- `neighbor_contacts` : determine whether to use the average of nearest neighbor contacts as the target label during node embedding.
+- `nearest_neighbor_override` : use a custom numpy array to define nearest neighbors. The format should be an `N x (k+1)` array with `N` denoting the number of cells in the dataset and `k` denoting the number of nearest neighbors. Row `i` in the array should contain entries denoting which cells are the nearest neighbors of cell `i`.
+- `cluster_gpu_caching` : toggle caching chromosome embeddings on the GPU prior to clustering to reduce CPU overhead converting embedding vectors to cuda variables. We recomend disabling this if your GPU memory is less than 16 GB.
+- `gpu_uniques` : determine whether to use the GPU to compute unique random walk samples. On machines with higher CPU core counts, CPU processing may be faster than GPU processing.
+- `kmeans_init` : the `n_init` parameter in scikit-learn/cuML's `KMeans`. We set this value at a default of 1 to reduce clustering runtime.
 
 ## Contact
-Please email kxiong@andrew.cmu.edu or raise an issue in the github repository with any questions about installation or usage.
+Please email jianma@cs.cmu.edu or raise an issue in the github repository with any questions about installation or usage.

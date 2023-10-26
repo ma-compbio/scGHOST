@@ -1,129 +1,129 @@
 {
-    "schic_directory" : "/directory/of/higashi/imputed/maps",
+    "schic_directory" : "/mnt/e/data/pfc",
     "label_info": {
-        "path":"/path/to/label_info.pickle",
-        "cell_type_key": "cell type key in label_info.pickle"
+        "path":"/mnt/e/data/pfc/label_info.pickle",
+        "cell_type_key": "cluster label"
     },
-    "data_directory" : "/directory/to/save/scghost/outputs/",
+    "data_directory" : "/mnt/e/data/scghost_pfc_output",
     "chromosomes" : {
         "1" : {
             "adj" : "chr1_sparse_adj.npy",
-            "imputed" : "chr1_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr1_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 1
         },
         "2" : {
             "adj" : "chr2_sparse_adj.npy",
-            "imputed" : "chr2_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr2_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 2
         },
         "3" : {
             "adj" : "chr3_sparse_adj.npy",
-            "imputed" : "chr3_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr3_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 3
         },
         "4" : {
             "adj" : "chr4_sparse_adj.npy",
-            "imputed" : "chr4_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr4_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 4
         },
         "5" : {
             "adj" : "chr5_sparse_adj.npy",
-            "imputed" : "chr5_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr5_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 5
         },
         "6" : {
             "adj" : "chr6_sparse_adj.npy",
-            "imputed" : "chr6_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr6_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 6
         },
         "7" : {
             "adj" : "chr7_sparse_adj.npy",
-            "imputed" : "chr7_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr7_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 7
         },
         "8" : {
             "adj" : "chr8_sparse_adj.npy",
-            "imputed" : "chr8_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr8_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 8
         },
         "9" : {
             "adj" : "chr9_sparse_adj.npy",
-            "imputed" : "chr9_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr9_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 9
         },
         "10" : {
             "adj" : "chr10_sparse_adj.npy",
-            "imputed" : "chr10_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr10_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 10
         },
         "11" : {
             "adj" : "chr11_sparse_adj.npy",
-            "imputed" : "chr11_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr11_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 11
         },
         "12" : {
             "adj" : "chr12_sparse_adj.npy",
-            "imputed" : "chr12_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr12_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 12
         },
         "13" : {
             "adj" : "chr13_sparse_adj.npy",
-            "imputed" : "chr13_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr13_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 13
         },
         "14" : {
             "adj" : "chr14_sparse_adj.npy",
-            "imputed" : "chr14_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr14_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 14
         },
         "15" : {
             "adj" : "chr15_sparse_adj.npy",
-            "imputed" : "chr15_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr15_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 15
         },
         "16" : {
             "adj" : "chr16_sparse_adj.npy",
-            "imputed" : "chr16_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr16_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 16
         },
         "17" : {
             "adj" : "chr17_sparse_adj.npy",
-            "imputed" : "chr17_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr17_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 17
         },
         "18" : {
             "adj" : "chr18_sparse_adj.npy",
-            "imputed" : "chr18_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr18_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 18
         },
         "19" : {
             "adj" : "chr19_sparse_adj.npy",
-            "imputed" : "chr19_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr19_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 19
         },
         "20" : {
             "adj" : "chr20_sparse_adj.npy",
-            "imputed" : "chr20_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr20_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 20
         },
         "21" : {
             "adj" : "chr21_sparse_adj.npy",
-            "imputed" : "chr21_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr21_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 21
         },
         "22" : {
             "adj" : "chr22_sparse_adj.npy",
-            "imputed" : "chr22_exp1_nbr_5_impute.hdf5",
+            "imputed" : "chr22_exp5_zinb_nbr_5_impute.hdf5",
             "integer" : 22
         }
     },
     "chrom_sizes" : "data/hg38.chrom.sizes",
-    "chrom_indices" : null,
-    "embeddings_path" : "/path/to/exp1_0_origin.npy",
-    "higashi_scab_path" : "/path/to/higashi/scAB.hdf5",
+    "chrom_indices" : "/mnt/e/data/scghost_pfc_output/chrom_indices.pkl",
+    "embeddings_path" : "/mnt/e/data/pfc/embed/exp5_zinb_0_origin.npy",
+    "higashi_scab_path" : "/mnt/e/data/pfc/scAB.hdf5",
     "cell_type" : null,
     "random_walk" : {
-        "num_walks" : 50,
+        "num_walks" : 25,
         "ignore_top" : 0.02,
         "top_percentile" : 0.25
     },
@@ -132,8 +132,8 @@
     "batch_size" : 16,
     "epochs" : 5,
     "resolution" : 500000,
-    "neighbor_contacts" : false,
-    "nearest_neighbor_override" : null,
+    "neighbor_contacts" : true,
+    "nearest_neighbor_override" : "/mnt/e/data/pfc/random_nearest_neighbors.npy",
     "gpu_uniques" : true,
     "cluster_gpu_caching" : true,
     "kmeans_init" : 1

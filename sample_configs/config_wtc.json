@@ -1,10 +1,7 @@
 {
-    "schic_directory" : "/directory/of/higashi/imputed/maps",
-    "label_info": {
-        "path":"/path/to/label_info.pickle",
-        "cell_type_key": "cell type key in label_info.pickle"
-    },
-    "data_directory" : "/directory/to/save/scghost/outputs/",
+    "schic_directory" : "/mnt/e/data/wtc",
+    "label_info": null,
+    "data_directory" : "/mnt/e/data/scghost_wtc_output",
     "chromosomes" : {
         "1" : {
             "adj" : "chr1_sparse_adj.npy",
@@ -119,11 +116,11 @@
     },
     "chrom_sizes" : "data/hg38.chrom.sizes",
     "chrom_indices" : null,
-    "embeddings_path" : "/path/to/exp1_0_origin.npy",
-    "higashi_scab_path" : "/path/to/higashi/scAB.hdf5",
+    "embeddings_path" : "/mnt/e/data/wtc/embed/exp1_0_origin.npy",
+    "higashi_scab_path" : "/mnt/e/data/wtc/scAB_with_nbr.hdf5",
     "cell_type" : null,
     "random_walk" : {
-        "num_walks" : 50,
+        "num_walks" : 25,
         "ignore_top" : 0.02,
         "top_percentile" : 0.25
     },
@@ -132,7 +129,7 @@
     "batch_size" : 16,
     "epochs" : 5,
     "resolution" : 500000,
-    "neighbor_contacts" : false,
+    "neighbor_contacts" : true,
     "nearest_neighbor_override" : null,
     "gpu_uniques" : true,
     "cluster_gpu_caching" : true,

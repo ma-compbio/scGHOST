@@ -3,9 +3,8 @@ import torch
 import numpy as np
 import pickle
 import gc
-import tqdm
 
-from tqdm import trange
+from tqdm.auto import trange
 from modules.preprocessing import parse_chromosomes
 from torch import nn
 from tqdm import trange
@@ -14,118 +13,120 @@ from torch.nn import functional as F
 num_cells = 500
 
 def to_cuda(x):
-    
     if torch.cuda.is_available():
         return x.cuda()
-    
+
     return x
 
+
 class hubs(nn.Module):
-    def __init__(self,N):
-        super(hubs,self).__init__()
+    def __init__(self, N, num_cells, hidden_dim=128):
+        super(hubs, self).__init__()
         self.N = N
-        
-        self.embedding = nn.Sequential(
-            nn.Linear(self.N,256), nn.ReLU(),
-            nn.Linear(256,128),
-        )
-        
+        self.num_cells = num_cells
+        self.hidden_dim = hidden_dim
+
+        self.embedding = nn.Embedding(self.N * self.num_cells,
+                                      self.hidden_dim, sparse=True, max_norm=1)
+
         to_cuda(self)
+
+    def to_one_hot(self, x):
+        return F.one_hot(x, num_classes=self.N * self.num_cells).float()
+
+    def embed(self, x):
+        return self.embedding(x)
+
+
+def prep_pairs_labels(all_pairs, all_labels, gap, indices=None, thresh=None):
+    concatenated_pairs = []
+    concatenated_labels = []
+
+    lengths = [len(xx) for xx in all_pairs]
+    clip_len = np.min(lengths) if thresh is None else thresh
+    iterable = range(len(all_pairs)) if indices is None else indices
+
+    kept_cells = []
+    n = 0
+
+    # Random permutation within each cell
+    for i in iterable:
+        cell_pairs = all_pairs[i]
         
-    def to_one_hot(self,x):
-        return F.one_hot(x,num_classes=self.N).float()
-    
-    def embed(self,x):
-        return self.embedding(self.to_one_hot(x))
-    
-def embed_single_cells(pairs_labels_file,oems_file,embedding_file,cell_nums,batch_size=64):
-    
-    pairs_labels = pickle.load(open(pairs_labels_file,'rb'))
-    all_continuous_pairs = pairs_labels['pairs']
-    all_continuous_labels = pairs_labels['labels']
-    
-    OEMs = np.load(oems_file)
+        if thresh is not None and len(cell_pairs) < thresh:
+            continue
+
+        id_ = torch.randperm(len(cell_pairs))[:clip_len]
+        concatenated_pairs.append(cell_pairs[id_] + n * gap)
+        concatenated_labels.append(all_labels[i][id_])
+
+        n += 1
+        kept_cells.append(i)
+        
+    # Stack instead of concat, shape of (#cell, #pairs, 2)
+    concatenated_pairs = torch.stack(concatenated_pairs, dim=0)
+    concatenated_labels = torch.stack(concatenated_labels, dim=0)
+
+    return (concatenated_pairs, concatenated_labels) if thresh is None else (concatenated_pairs,concatenated_labels,np.array(kept_cells))
+
+
+def embed_single_cells_unified(all_continuous_pairs, all_continuous_labels, OEMs, embedding_file, epochs=1,
+                               cell_nums=None, batch_size=64, verbose=False, prepped=False):
+    cell_nums = np.arange(len(all_continuous_pairs)) if cell_nums is None else cell_nums
+
+    model = hubs(len(OEMs[0]), len(cell_nums), hidden_dim=128)
     bs = batch_size
-    
-    cell_nums = np.arange(len(OEMs)) if cell_nums is None else cell_nums
-    
-    criterion = nn.MSELoss()
-    
+
     all_Es = []
-    
-    for ii,cnum in tqdm(enumerate(cell_nums),total=len(cell_nums)):
-        
-        model = hubs(len(OEMs[ii]))
-        optimizer = torch.optim.Adam(model.parameters())
-        
-        cell_pairs = to_cuda(all_continuous_pairs[cnum])
-        cell_labels = to_cuda(all_continuous_labels[cnum])
-        
-        for epoch in range(1):
-            random_shuffle = np.random.permutation(len(all_continuous_pairs[cnum]))
-            
-            rloss = 0
-            rcntl = 0
-            rpcal = 0
-            rsamples = 0
-            
-            for i in range(0,len(cell_pairs),bs):
+    optimizer = torch.optim.SparseAdam(model.parameters())
 
-                idx = random_shuffle[i:i+bs]
-                blen = len(idx)
-                
-                x = model.embed(cell_pairs[idx])
-                x1 = x[:,0]
-                x2 = x[:,1]
-                y = cell_labels[idx]
-                
-                sim = nn.CosineSimilarity()(x1,x2)
-                
-                optimizer.zero_grad()
-                contact_loss = criterion(sim,y)
-                loss = contact_loss
+    if not prepped:
+        all_continuous_pairs, all_continuous_labels = prep_pairs_labels(all_continuous_pairs,
+                                                                      all_continuous_labels,
+                                                                      OEMs[0].shape[0],
+                                                                      indices=cell_nums)
+    for epoch in range(epochs):
 
-                loss.backward()
-                optimizer.step()
-                
-                rloss += float(loss) * blen
-                rcntl += float(contact_loss) * blen
-                rsamples += blen
-                
-        E = torch.zeros(len(OEMs[cnum]),128)
-        
-        for i in range(0,len(OEMs[cnum]),bs):
-            end = np.min([i+bs,len(OEMs[cnum])])
-            e = model.embed(to_cuda(torch.arange(i,end)))
-            E[i:i+len(e)] = e
-        
-        E = E.detach().cpu().numpy()
-        all_Es.append(E)
-        
-        torch.cuda.empty_cache()
+        shuffle_id = torch.randperm(all_continuous_pairs.shape[1])
 
-    all_Es = np.array(all_Es)
+        N_pairs = all_continuous_pairs.shape[-2]
+        rloss = 0
+        rsamples = 0
+        bar = trange(0, N_pairs, bs) if verbose else range(0, N_pairs, bs)
+
+        for i in bar:
+            # During training, sample a batch of pairs from each cell (can be small 16 yields good results)
+            # You can also sample a batch of cells as well, but that needs to be sth large, like 2k cells etc.
+            x = model.embed(to_cuda(all_continuous_pairs[:, shuffle_id[i:i + bs], :]))
+            x1 = x[:, :, 0]
+            x2 = x[:, :, 1]
+
+            y = to_cuda(all_continuous_labels[:, shuffle_id[i:i + bs]])
+            sim = F.cosine_similarity(x1, x2, dim=-1)
+            optimizer.zero_grad()
+            loss = F.mse_loss(sim, y)
+            loss.backward()
+            optimizer.step()
+
+            blen = x.shape[1]
+            rloss += float(loss) * blen
+            rsamples += blen
+
+        print('Epoch %d: %d/%d -- %.6f loss' % (epoch, rsamples, N_pairs, rloss / rsamples), end='\r')
+
+        print()
+
+    num_loci = model.N * model.num_cells
+    bar = trange(0, num_loci, bs) if verbose else range(0, num_loci, bs)
+
+    for i in bar:
+        end = np.min([i + bs, num_loci])
+
+        x = model.embed(to_cuda(torch.arange(i, end))).to_dense().detach().cpu().numpy()
+        all_Es.append(x)
+
+    all_Es = np.vstack(all_Es)  # final shape - (num_cells * num_chrom_loci, hidden_dim)
+
+    all_Es = all_Es.reshape((model.num_cells, model.N, model.hidden_dim))
+
     np.save(embedding_file, all_Es)
-    gc.collect()
-
-
-def graph_embedding(runtime_args):
-
-    chromosomes = parse_chromosomes(runtime_args['chromosomes'])
-
-    for chrn in chromosomes:
-    
-        sample_path = os.path.join(runtime_args['data_directory'],'chr%d_calibrated_samples.pkl' % chrn)
-        oe_path = os.path.join(runtime_args['data_directory'],'chr%d_oe.npy' % chrn)
-        out_path = os.path.join(runtime_args['data_directory'],'chr%d_embeddings' % chrn)
-
-        # params: (pairs_labels_file,oems_file,embedding_file,cell_nums,batch_size=64)
-        embed_single_cells(
-            sample_path,
-            oe_path,
-            out_path,
-            None, # specify cell_nums to limit the dataset size, not implemented modularly
-            num_cells
-        )
-        
-        torch.cuda.empty_cache()

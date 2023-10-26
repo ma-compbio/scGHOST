@@ -6,11 +6,13 @@ import gc
 import numpy as np
 
 from utilities.gpu import to_cuda
-from modules.preprocessing import parse_chromosomes, parse_nearest_neighbors
+from utilities.parsers import parse_nearest_neighbors
+from utilities.helper import random_sample
+from modules.preprocessing import parse_chromosomes
 from torch.nn import functional as F
 from tqdm import trange
 
-def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,use_breakpoint=False):
+def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,num_walks=50,use_breakpoint=False):
     
     all_cell_chrom_samples = []
     layered_maps = OEMs[nearest_neighbors[cell_range]]
@@ -18,7 +20,8 @@ def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,use_breakpoint=Fals
     for cnum in trange(len(cell_range)):
         chrm_offset = 0
 
-        m = to_cuda(torch.tensor(np.nan_to_num(layered_maps[cnum])).float())
+        # m = to_cuda(torch.tensor(torch.nan_to_num(layered_maps[cnum])).float())
+        m = to_cuda(layered_maps[cnum].float()) # cast from bfloat16 to float32 for precision with sorting
 
         bpt = 0
         
@@ -38,61 +41,52 @@ def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,use_breakpoint=Fals
         for i in range(m.shape[0]):
             sorted_slc_w[i],sorted_slc_i[i] = m[i].sort(dim=1)
             sorted_slc_w_T[i],sorted_slc_i_T[i] = m[i].T.sort(dim=1)
-        
-        for n in range(num_walks):
 
-            test_samples = to_cuda(torch.arange(m.shape[1]))
+        sorted_slc_w = sorted_slc_w.repeat(num_walks,1,1,1)
+        sorted_slc_w_T = sorted_slc_w_T.repeat(num_walks,1,1,1)
+        sorted_slc_i = sorted_slc_i.repeat(num_walks,1,1,1)
+        sorted_slc_i_T = sorted_slc_i_T.repeat(num_walks,1,1,1)
 
-            w1,i1 = sorted_slc_w[:,test_samples],sorted_slc_i[:,test_samples]
+        test_samples = to_cuda(torch.arange(m.shape[1]))
 
-            pw1 = torch.exp(w1[:,:,-num_top:])
-            nw1 = 1/torch.exp(w1[:,:,:num_top]) # inverse to select for lower contact frequencies
+        w1,i1 = sorted_slc_w[:,:,test_samples],sorted_slc_i[:,:,test_samples]
 
-            pi1 = i1[:,:,-num_top:]
-            ni1 = i1[:,:,:num_top]
+        pw1 = torch.exp(w1[...,-num_top:])
+        nw1 = 1/torch.exp(w1[...,:num_top]) # inverse to select for lower contact frequencies
 
-            p_mask = torch.stack(
-                [F.one_hot(torch.multinomial(pw1[i],1).flatten(),num_classes=pi1.shape[-1]) for i in range(len(pw1))]
-            )
-            n_mask = torch.stack(
-                [F.one_hot(torch.multinomial(nw1[i],1).flatten(),num_classes=ni1.shape[-1]) for i in range(len(nw1))]
-            )
-            
-            pos_selection1 = ((pi1 * p_mask).sum(dim=-1)).type(torch.LongTensor)
-            neg_selection1 = ((ni1 * n_mask).sum(dim=-1)).type(torch.LongTensor)
+        pi1 = i1[...,-num_top:]
+        ni1 = i1[...,:num_top]
 
-            pw2 = torch.stack(
-                [sorted_slc_w_T[i,pos_selection1[i]] for i in range(len(pos_selection1))]
-            )
-            pi2 = torch.stack(
-                [sorted_slc_i_T[i,pos_selection1[i]] for i in range(len(pos_selection1))]
-            )
-            
-            pw2 = torch.exp(pw2[:,:,-num_top:])
-            pi2 = pi2[:,:,-num_top:]
+        p_mask = F.one_hot(torch.squeeze(random_sample(pw1,1)[1]),num_classes=pi1.shape[-1])
+        n_mask = F.one_hot(torch.squeeze(random_sample(nw1,1)[1]),num_classes=ni1.shape[-1])
 
-            
-            nw2 = torch.stack([sorted_slc_w_T[i,neg_selection1[i]] for i in range(len(neg_selection1))])
-            ni2 = torch.stack([sorted_slc_i_T[i,neg_selection1[i]] for i in range(len(neg_selection1))])
-            
-            nw2 = torch.exp(nw2[:,:,-num_top:])
-            ni2 = ni2[:,:,-num_top:]
+        pos_selection1 = ((pi1 * p_mask).sum(dim=-1)).long()
+        neg_selection1 = ((ni1 * n_mask).sum(dim=-1)).long()
 
-            p_mask = torch.stack(
-                [F.one_hot(torch.multinomial(pw2[i],1).flatten(),num_classes=pi2.shape[-1]) for i in range(len(pw2))]
-            )
-            n_mask = torch.stack(
-                [F.one_hot(torch.multinomial(nw2[i],1).flatten(),num_classes=ni2.shape[-1]) for i in range(len(nw2))]
-            )
+        pw2 = torch.gather(sorted_slc_w_T,-2,pos_selection1[...,None].tile(1,1,1,pos_selection1.shape[-1]))
+        pi2 = torch.gather(sorted_slc_i_T,-2,pos_selection1[...,None].tile(1,1,1,pos_selection1.shape[-1]))
 
-            pos_selection2 = ((pi2 * p_mask).sum(dim=-1)).type(torch.LongTensor)
-            neg_selection2 = ((ni2 * n_mask).sum(dim=-1)).type(torch.LongTensor)
-            
+        pw2 = torch.exp(pw2[...,-num_top:])
+        pi2 = pi2[...,-num_top:]
+
+        nw2 = torch.gather(sorted_slc_w_T,-2,neg_selection1[...,None].tile(1,1,1,pos_selection1.shape[-1]))
+        ni2 = torch.gather(sorted_slc_i_T,-2,neg_selection1[...,None].tile(1,1,1,pos_selection1.shape[-1]))
+
+        nw2 = torch.exp(nw2[...,-num_top:])
+        ni2 = ni2[...,-num_top:]
+
+        p_mask = F.one_hot(torch.squeeze(random_sample(pw2,1)[1]),num_classes=pi2.shape[-1])
+        n_mask = F.one_hot(torch.squeeze(random_sample(nw2,1)[1]),num_classes=ni2.shape[-1])
+
+        pos_selection2 = ((pi2 * p_mask).sum(dim=-1)).long()
+        neg_selection2 = ((ni2 * n_mask).sum(dim=-1)).long()
+
+        for i in range(num_walks):
             selections = to_cuda(torch.stack((
-                pos_selection1.flatten() + bpt,
-                pos_selection2.flatten(),
-                neg_selection1.flatten() + bpt,
-                neg_selection2.flatten()
+                pos_selection1[i].flatten() + bpt,
+                pos_selection2[i].flatten(),
+                neg_selection1[i].flatten() + bpt,
+                neg_selection2[i].flatten()
             )).T.flatten())
             
             labels = to_cuda(torch.tensor([1,1,-1,-1]).repeat(len(m) * len(test_samples)))
@@ -105,39 +99,7 @@ def sample_chrom(chrom_num,OEMs,cell_range,nearest_neighbors,use_breakpoint=Fals
 
             all_samples.append(interactions)
 
-        all_samples = torch.unique(torch.cat(all_samples),dim=0)
-        all_cell_chrom_samples.append(all_samples.cpu())
-        
-        gc.collect()
-        torch.cuda.empty_cache()
+        all_samples = torch.unique(torch.cat(all_samples),dim=0).cpu().numpy().astype(np.int16)
+        all_cell_chrom_samples.append(all_samples)
 
     return all_cell_chrom_samples
-
-def random_walk(runtime_args):
-
-    chromosomes = parse_chromosomes(runtime_args)
-    nearest_neighbors = parse_nearest_neighbors(runtime_args)
-
-    for chrom_num in chromosomes:
-
-        print('Processing random walks in chromosome %d' % chrom_num)
-        
-        oe_path = os.path.join(runtime_args['data_directory'],'chr%d_oe.npy' % chrom_num)
-        out_path = os.path.join(runtime_args['data_directory'],'chr%d_samples.npy' % chrom_num)
-
-        OEMs = np.load(oe_path)
-
-        corr_OEMs = np.zeros_like(OEMs)
-
-        for i in trange(len(OEMs)):
-            corr_OEMs[i] = np.corrcoef(OEMs[i])
-            np.fill_diagonal(corr_OEMs[i],0)
-        
-        all_cell_chrom_samples = sample_chrom(chrom_num,corr_OEMs,np.arange(len(corr_OEMs)),nearest_neighbors)
-        
-        pickle.dump({
-            'chrom_samples' : all_cell_chrom_samples,
-        }, open(out_path,'wb'))
-
-        del all_cell_chrom_samples
-        torch.cuda.empty_cache()
