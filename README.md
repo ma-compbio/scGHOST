@@ -9,6 +9,11 @@ While scGHOST is developed for scHi-C data, it can also identify single-cell sub
 
 # Running scGHOST
 
+## Input data
+
+scGHOST uses the outputs from [Higashi](https://github.com/ma-compbio/Higashi) as its inputs.
+Specifically, it requires the scHi-C imputations (hdf5 format), per-cell embeddings (numpy format), sparse raw scHi-C adjacency maps (numpy format), the scA/B scores (hdf5 format), and the label info file (pickle format) describing the cell types corresponding to each cell in the dataset.
+
 ## Installation
 
 Before installing any Python packages, we strongly recommend using Anaconda (please refer to the [Anaconda](https://anaconda.org/) webpage for `conda` installation instructions) to create a python 3.10 environment using the following command:
