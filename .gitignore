@@ -160,3 +160,5 @@ cython_debug/
 *.hdf5
 *.npy
 *.pdf
+tutorial.json
+bed_files/

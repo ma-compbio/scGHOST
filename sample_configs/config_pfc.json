@@ -133,7 +133,7 @@
     "epochs" : 5,
     "resolution" : 500000,
     "neighbor_contacts" : true,
-    "nearest_neighbor_override" : "/mnt/e/data/pfc/random_nearest_neighbors.npy",
+    "nearest_neighbor_override" : null,
     "gpu_uniques" : true,
     "cluster_gpu_caching" : true,
     "kmeans_init" : 1
