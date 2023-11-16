@@ -117,7 +117,7 @@
             "integer" : 22
         }
     },
-    "chrom_sizes" : "data/hg38.chrom.sizes",
+    "chrom_sizes" : "data/hg19.chrom.sizes",
     "chrom_indices" : "/mnt/e/data/scghost_pfc_output/chrom_indices.pkl",
     "embeddings_path" : "/mnt/e/data/pfc/embed/exp5_zinb_0_origin.npy",
     "higashi_scab_path" : "/mnt/e/data/pfc/scAB.hdf5",
