@@ -167,3 +167,5 @@ def sc_compartment2embedding(embeds_path,data_dir,output_file="tutorial_scatterp
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
     plt.close('all')
+
+    return (vec,label,pal)
