@@ -86,5 +86,11 @@ From scratch, scGHOST takes about 2 hours to run on the sciHi-C GM12878 dataset 
 - `gpu_uniques` : determine whether to use the GPU to compute unique random walk samples. On machines with higher CPU core counts, CPU processing may be faster than GPU processing.
 - `kmeans_init` : the `n_init` parameter in scikit-learn/cuML's `KMeans`. We set this value at a default of 1 to reduce clustering runtime.
 
+## Tutorials
+
+Please follow our tutorial notebooks in the root directory for examples on how to run scGHOST with and without first running Higashi. For a sample run of scGHOST, users can download the smaller WTC-11 dataset [here](https://cmu.box.com/s/lk51skm65hdmp54tlwskd3vo5tk0db2p) then extract the zip file to any directory. After downloading the sample data, please change the `sample_configs/config_wtc.json` configuration file accordingly to point to the correct paths and run the following command:
+
+`python scghost.py --config sample_configs/config_wtc.json`
+
 ## Contact
 Please email jianma@cs.cmu.edu or raise an issue in the github repository with any questions about installation or usage.
