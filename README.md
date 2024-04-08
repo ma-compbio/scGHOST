@@ -88,7 +88,7 @@ From scratch, scGHOST takes about 2 hours to run on the sciHi-C GM12878 dataset 
 
 ## Tutorials
 
-Please follow our tutorial notebooks in the root directory for examples on how to run scGHOST with and without first running Higashi. For a sample run of scGHOST, users can download the smaller WTC-11 dataset [here](https://cmu.box.com/s/lk51skm65hdmp54tlwskd3vo5tk0db2p) then extract the zip file to any directory. After downloading the sample data, please change the `sample_configs/config_wtc.json` configuration file accordingly to point to the correct paths and run the following command:
+Please follow our tutorial notebooks in the root directory for examples on how to run scGHOST with and without first running Higashi. For a sample run of scGHOST, users can download the smaller WTC-11 dataset [here](http://genome.compbio.cs.cmu.edu:8008/~kxiong/data/scghost/wtc11/). After downloading the sample data, please change the `sample_configs/config_wtc.json` configuration file accordingly to point to the correct paths and run the following command:
 
 `python scghost.py --config sample_configs/config_wtc.json`
 
