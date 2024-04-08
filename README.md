@@ -43,7 +43,7 @@ Systems without a CUDA-capable GPU can also install scGHOST using the same depen
 scGHOST can use up to 40 GB of memory for a single-cell dataset of 4,238 cells.
 Considering operating system overhead, we recommend running scGHOST on a machine with at least 64 GB of memory to avoid poor performance or out-of-memory errors at runtime.
 
-scGHOST was developed on a system with a 12-core 12th generation Intel CPU, an Nvidia RTX 3090 GPU with 24GB of VRAM, and 64GB of system memory. With GPU caching enabled, scGHOST uses a maximum of 15 GB of VRAM on the PFC dataset. With GPU caching disabled, VRAM becomes less of a limiting factor and scGHOST should run on any CUDA-capable GPU.
+scGHOST was developed on a system with a 12-core 12th generation Intel CPU, an Nvidia RTX 3090 GPU with 24GB of VRAM, and 64GB of system memory. With GPU caching enabled, scGHOST uses a maximum of 15 GB of VRAM on the PFC dataset. With GPU caching disabled, VRAM becomes less of a limiting factor and scGHOST should run on any CUDA-capable GPU with at least 4 GB of VRAM.
 
 ## Usage
 
@@ -93,4 +93,4 @@ Please follow our tutorial notebooks in the root directory for examples on how t
 `python scghost.py --config sample_configs/config_wtc.json`
 
 ## Contact
-Please email jianma@cs.cmu.edu or raise an issue in the github repository with any questions about installation or usage.
+Please email jianma@cs.cmu.edu or raise an issue in the github repository with any questions about installation or usage or any encountered bugs.
